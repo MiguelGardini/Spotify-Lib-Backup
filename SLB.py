@@ -27,7 +27,6 @@ while len(tracks.items) > 0:
     tracks = spotify.saved_tracks(market=None, limit=50, offset=i)
     songs.extend(tracks.items)
 
-
 songs.sort(key = lambda x: (
     unidecode.unidecode(x.track.album.artists[0].name.lower()), 
     unidecode.unidecode(x.track.album.name.lower()),
