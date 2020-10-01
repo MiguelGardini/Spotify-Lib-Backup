@@ -34,9 +34,8 @@ songs.sort(key = lambda x: (
     x.track.track_number
 ))
 
-# Saving into the file
-f = open("songs.txt", "w")
-for x in songs:
-    line = " ".join((x.track.album.artists[0].name, "-", (x.track.album.name), "-", str(x.track.track_number), "-", x.track.name, "\n"))
-    f.write(line)
-f.close()
+# Saving to the file
+with open("songs.txt", "w+") as f:
+    for song in songs:
+        line = f"{song.track.album.artists[0].name} - {song.track.album.name} - {song.track.track_number} - {song.track.name}\n"
+        f.write(line)
