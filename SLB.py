@@ -16,15 +16,17 @@ spotify.token = tk.prompt_for_user_token(
 )
 os.system('clear')
 
+# Will get BATCH_SIZE songs per request
+BATCH_SIZE = 50
+
 # All tracks requisition
-# Maybe it can be improved using threads and/or generators and list comprehension
-i = 0
-tracks = spotify.saved_tracks(market=None, limit=50, offset=i)
-songs = tracks.items
-while len(tracks.items) > 0:
-    i += 50
-    print("Músicas coletadas: ", i)
-    tracks = spotify.saved_tracks(market=None, limit=50, offset=i)
+songs = []
+while True:
+    print(f'Coletando músicas... Total: {len(songs)}')
+    tracks = spotify.saved_tracks(market=None, limit=BATCH_SIZE, offset=len(songs))
+    if not tracks or not tracks.items:
+        break
+
     songs.extend(tracks.items)
 
 songs.sort(key = lambda x: (
@@ -34,9 +36,8 @@ songs.sort(key = lambda x: (
     x.track.track_number
 ))
 
-# Saving into the file
-f = open("songs.txt", "w")
-for x in songs:
-    line = " ".join((x.track.album.artists[0].name, "-", (x.track.album.name), "-", str(x.track.track_number), "-", x.track.name, "\n"))
-    f.write(line)
-f.close()
+# Saving to the file
+with open('songs.txt', 'w+') as f:
+    for song in songs:
+        line = f"{song.track.album.artists[0].name} - {song.track.album.name} - {song.track.track_number} - {song.track.name}\n"
+        f.write(line)
